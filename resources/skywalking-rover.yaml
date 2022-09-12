@@ -44,7 +44,7 @@ spec:
       containers:
         - name: skywalking-rover
           # SkyWalking Rover image path
-          image: ghcr.io/apache/skywalking-rover/skywalking-rover:b034d7d45c1537e755d4f0437fc94073742a883d
+          image: apache/skywalking-rover:0.3.0
           imagePullPolicy: Always
           securityContext:
             capabilities:
