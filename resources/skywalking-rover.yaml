@@ -44,7 +44,7 @@ spec:
       containers:
         - name: skywalking-rover
           # SkyWalking Rover image path
-          image: apache/skywalking-rover:0.3.0
+          image: apache/skywalking-rover:0.4.0
           imagePullPolicy: Always
           securityContext:
             capabilities:
@@ -72,6 +72,10 @@ spec:
               value: /host
             - name: ROVER_LOGGER_LEVEL
               value: DEBUG
+            - name: ROVER_PROCESS_DISCOVERY_KUBERNETES_ANALYZER_ISTIO_ENVOY_SERVICE_NAME
+              value: '{{.Pod.LabelValue "service.istio.io/canonical-revision,app.kubernetes.io/version,version" | equalsOrDefault "latest" "-" }}|{{.Pod.LabelValue "service.istio.io/canonical-name,app.kubernetes.io/name,app" }}|{{.Pod.Namespace}}|{{- with $istioProxy := .Pod.FindContainer "istio-proxy" }}{{$istioProxy.EnvValue "TSB_CLUSTER,ISTIO_META_CLUSTER_ID"}}{{- end }}|-'
+            - name: ROVER_PROCESS_DISCOVERY_KUBERNETES_ANALYZER_ISTIO_APPLICATION_SERVICE_NAME
+              value: '{{.Pod.LabelValue "service.istio.io/canonical-revision,app.kubernetes.io/version,version" | equalsOrDefault "latest" "-" }}|{{.Pod.LabelValue "service.istio.io/canonical-name,app.kubernetes.io/name,app" }}|{{.Pod.Namespace}}|{{- with $istioProxy := .Pod.FindContainer "istio-proxy" }}{{$istioProxy.EnvValue "TSB_CLUSTER,ISTIO_META_CLUSTER_ID"}}{{- end }}|-'
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
